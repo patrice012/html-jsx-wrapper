@@ -1,12 +1,23 @@
-import { parseDocument, DomUtils } from "htmlparser2";
+import { parseDocument } from "htmlparser2";
 import * as vscode from "vscode";
 
 export function getParentTag(
   document: vscode.TextDocument,
   selection: vscode.Selection
 ): string | null {
-  const content = document.getText(); // Get the full document text
-  const position = document.offsetAt(selection.start); // Get the selection start as an offset
+  // Get the full document text
+  const content = document.getText();
+  // Get the selection start as an offset
+  let position = document.offsetAt(selection.start);
+
+  // Trim leading whitespace from the selected text
+  const selectedText = document.getText(selection);
+  const trimmedSelectedText = selectedText.trimStart();
+
+  // Adjust the offset to account for trimmed whitespace
+  const leadingWhitespaceLength =
+    selectedText.length - trimmedSelectedText.length;
+  position += leadingWhitespaceLength;
 
   // Parse the document with start and end indices enabled
   const dom = parseDocument(content, {
@@ -21,7 +32,8 @@ export function getParentTag(
         if (node.children && node.children.length > 0) {
           // Recurse into children
           const childNode = findEnclosingNode(node.children, position);
-          return childNode || node; // Return child if found, otherwise current node
+          // Return child if found, otherwise current node
+          return childNode || node;
         }
         return node;
       }

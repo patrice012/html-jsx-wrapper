@@ -1,8 +1,12 @@
 interface TagRules {
-  allowedChildren: string[]; // Tags that can be enclosed inside this tag
-  type: "block" | "inline" | "mixed" | "special" | "void"; // Type of the tag
-  canBeEnclosedBy?: string[]; // Tags that can enclose this tag
-  allowsFlowContent?: boolean; // Whether this tag supports both inline and block content
+  // Tags that can be enclosed inside this tag
+  allowedChildren: string[];
+  // Type of the tag
+  type: "block" | "inline" | "mixed" | "special" | "void";
+  // Tags that can enclose this tag
+  canBeEnclosedBy?: string[];
+  // Whether this tag supports both inline and block content
+  allowsFlowContent?: boolean;
 }
 
 const htmlTagRules: Record<string, TagRules> = {

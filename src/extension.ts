@@ -25,17 +25,19 @@ export function activate(context: vscode.ExtensionContext) {
 
       // Get the parent tag of the selected text
       const parentTag = getParentTag(document, selection);
-      console.log(parentTag, "parentTag");
 
       // Prompt the user with filtered tags
       const tag = await showFilteredTagPicker(parentTag as string);
       if (!tag) {
-        vscode.window.showErrorMessage("No tag selected.");
+        vscode.window.showInformationMessage("No tag selected.");
         return;
       }
 
-      // Wrap the selected text
-      wrapSelectedText(editor, selection, selectedText, tag);
+      // Prompt the user to add attributes to the tag
+      const attributes = await promptForAttributes(tag);
+
+      // Wrap the selected text with the tag and attributes
+      wrapSelectedText(editor, selection, selectedText, tag, attributes);
     }
   );
 
@@ -51,17 +53,40 @@ async function showFilteredTagPicker(
   });
 }
 
+// Function to prompt the user for attributes
+async function promptForAttributes(tag: string): Promise<string> {
+  const attributeInput = await vscode.window.showInputBox({
+    prompt: `Enter attributes for <${tag}> (e.g., class="my-class" id="my-id")`,
+    placeHolder: `class="my-class" id="my-id"`,
+  });
+
+  return attributeInput || "";
+}
+
 function wrapSelectedText(
   editor: vscode.TextEditor,
   selection: vscode.Selection,
   selectedText: string,
-  tag: string
+  tag: string,
+  attributes: string
 ) {
-  const wrappedText = `<${tag}>\n${selectedText}\n</${tag}>`;
+  // Add attributes to the opening tag if any
+  const openingTag = attributes ? `<${tag} ${attributes}>` : `<${tag}>`;
+  const wrappedText = `${openingTag}\n${selectedText}\n</${tag}>`;
 
-  editor.edit((editBuilder) => {
-    editBuilder.replace(selection, wrappedText);
-  });
+  editor
+    .edit((editBuilder) => {
+      editBuilder.replace(selection, wrappedText);
+    })
+    .then(() => {
+      // Trigger auto-formatting on the modified document
+      vscode.commands.executeCommand("editor.action.formatDocument");
+    });
+
+  /*
+  "editor.action.formatDocument" format the entire document.
+  "editor.action.formatSelection"  format just the modified part.
+ */
 }
 
 export function deactivate() {
