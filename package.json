@@ -19,6 +19,10 @@
       {
         "command": "extension.embedWithTag",
         "title": "Embed Code with Tag"
+      },
+      {
+        "command": "extension.addAttributes",
+        "title": "Add attributes"
       }
     ],
     "keybindings": [
@@ -26,12 +30,22 @@
         "command": "extension.embedWithTag",
         "key": "ctrl+shift+e",
         "when": "editorTextFocus"
+      },
+      {
+        "command": "extension.addAttributes",
+        "key": "ctrl+shift+f",
+        "when": "editorTextFocus"
       }
     ],
     "menus": {
       "editor/context": [
         {
           "command": "extension.embedWithTag",
+          "when": "editorHasSelection",
+          "group": "1_modification"
+        },
+        {
+          "command": "extension.addAttributes",
           "when": "editorHasSelection",
           "group": "1_modification"
         }
