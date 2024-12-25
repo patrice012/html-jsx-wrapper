@@ -206,6 +206,31 @@ const htmlTagRules: Record<string, TagRules> = {
     type: "inline",
     canBeEnclosedBy: ["form", "div"],
   },
+  datalist: {
+    allowedChildren: ["option"],
+    type: "inline",
+    canBeEnclosedBy: ["form"],
+  },
+  fieldset: {
+    allowedChildren: ["legend", "*"],
+    type: "block",
+    canBeEnclosedBy: ["form"],
+  },
+  legend: {
+    allowedChildren: ["*"],
+    type: "inline",
+    canBeEnclosedBy: ["fieldset"],
+  },
+  optgroup: {
+    allowedChildren: ["option"],
+    type: "inline",
+    canBeEnclosedBy: ["select"],
+  },
+  progress: {
+    allowedChildren: [],
+    type: "inline",
+    canBeEnclosedBy: ["form", "div"],
+  },
 
   // Media elements
   video: {
@@ -237,6 +262,11 @@ const htmlTagRules: Record<string, TagRules> = {
     allowedChildren: ["*"],
     type: "block",
     canBeEnclosedBy: ["div", "section", "article", "body"],
+  },
+  caption: {
+    allowedChildren: ["*"],
+    type: "inline",
+    canBeEnclosedBy: ["table"],
   },
 
   // Table elements
@@ -274,6 +304,104 @@ const htmlTagRules: Record<string, TagRules> = {
     allowedChildren: ["*"],
     type: "block",
     canBeEnclosedBy: ["tr"],
+  },
+
+  // Text content
+  address: {
+    allowedChildren: ["*"],
+    type: "block",
+    canBeEnclosedBy: ["div", "section", "article", "aside", "main"],
+  },
+  blockquote: {
+    allowedChildren: ["*"],
+    type: "block",
+    canBeEnclosedBy: ["div", "section", "article", "aside"],
+  },
+  dd: {
+    allowedChildren: ["*"],
+    type: "block",
+    canBeEnclosedBy: ["dl"],
+  },
+  dl: {
+    allowedChildren: ["dt", "dd"],
+    type: "block",
+    canBeEnclosedBy: ["div", "section", "article", "aside"],
+  },
+  dt: {
+    allowedChildren: ["*"],
+    type: "block",
+    canBeEnclosedBy: ["dl"],
+  },
+  figcaption: {
+    allowedChildren: ["*"],
+    type: "inline",
+    canBeEnclosedBy: ["figure"],
+  },
+  figure: {
+    allowedChildren: ["figcaption", "img", "video", "audio", "canvas", "svg"],
+    type: "block",
+    canBeEnclosedBy: ["div", "section", "article", "aside"],
+  },
+  hr: {
+    allowedChildren: [],
+    type: "void",
+    canBeEnclosedBy: ["div", "section", "article", "aside"],
+  },
+  pre: {
+    allowedChildren: ["code"],
+    type: "block",
+    canBeEnclosedBy: ["div", "section", "article", "aside"],
+  },
+
+  // Inline text semantics
+  abbr: {
+    allowedChildren: ["*"],
+    type: "inline",
+    canBeEnclosedBy: ["p", "span", "div", "section"],
+  },
+  cite: {
+    allowedChildren: ["*"],
+    type: "inline",
+    canBeEnclosedBy: ["p", "span", "div", "section"],
+  },
+  mark: {
+    allowedChildren: ["*"],
+    type: "inline",
+    canBeEnclosedBy: ["p", "span", "div", "section"],
+  },
+  small: {
+    allowedChildren: ["*"],
+    type: "inline",
+    canBeEnclosedBy: ["p", "span", "div", "section"],
+  },
+  time: {
+    allowedChildren: ["*"],
+    type: "inline",
+    canBeEnclosedBy: ["p", "span", "div", "section"],
+  },
+
+  // Demarcating edits
+  del: {
+    allowedChildren: ["*"],
+    type: "inline",
+    canBeEnclosedBy: ["p", "span", "div", "section"],
+  },
+  ins: {
+    allowedChildren: ["*"],
+    type: "inline",
+    canBeEnclosedBy: ["p", "span", "div", "section"],
+  },
+
+  // Interactive elements
+  details: {
+    allowedChildren: ["summary", "*"],
+    type: "block",
+    canBeEnclosedBy: ["div", "section", "article"],
+  },
+  summary: {
+    allowedChildren: ["*"],
+    type: "inline",
+    canBeEnclosedBy: ["details"],
   },
 };
 

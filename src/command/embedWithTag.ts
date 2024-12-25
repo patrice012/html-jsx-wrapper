@@ -38,9 +38,33 @@ async function showFilteredTagPicker(
   parentTag: string
 ): Promise<string | undefined> {
   const validTags = getValidEnclosedTags(parentTag);
-  return vscode.window.showQuickPick(validTags, {
-    placeHolder: `Select a tag to wrap your code`,
+  const extendedTags = [...validTags, "Custom Input..."];
+
+  // Show the quick pick menu
+  const selected = await vscode.window.showQuickPick(extendedTags, {
+    placeHolder: `Select a tag to wrap your code or choose "Custom Input..."`,
+    canPickMany: false,
   });
+
+  // Handle user selection
+  if (selected === "Custom Input...") {
+    // Allow user to provide custom input
+    const customInput = await vscode.window.showInputBox({
+      prompt: `Enter a custom tag to wrap your code`,
+      placeHolder: "custom-tag",
+      validateInput: (input) => {
+        // Validate the custom input (e.g., ensure it's a valid HTML tag name)
+        const isValidTag = /^[a-zA-Z][a-zA-Z0-9-]*$/.test(input);
+        return isValidTag
+          ? null
+          : "Enter a valid tag name (e.g., div, my-custom-tag)";
+      },
+    });
+
+    return customInput || undefined;
+  }
+
+  return selected || undefined;
 }
 
 function wrapSelectedText(

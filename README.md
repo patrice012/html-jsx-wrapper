@@ -1,71 +1,131 @@
-# html-jsx-wrapper README
+# Embed & Modify Code Tags - VS Code Extension
 
-This is the README for your extension "html-jsx-wrapper". After writing up a brief description, we recommend including the following sections.
+A Visual Studio Code extension that streamlines HTML and code editing. This extension provides two powerful commands to boost productivity when working with tags and attributes:
+
+1.  **Embed selected code with a tag** - Quickly enclose any selected code block with your desired tag.
+
+2.  **Add attributes to the first tag in the selection** - Effortlessly add attributes like `id`, `class`, and more to the first tag of the selected code block.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+### 1. Embed Code with a Tag
 
-For example if there is an image subfolder under your extension project workspace:
+Enclose any selected code block with a tag of your choice.
 
-\!\[feature X\]\(images/feature-x.png\)
+For example, selecting the code below:
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+```html
+<p>This is a paragraph.</p>
+```
 
-## Requirements
+And running the **"Embed Code with Tag"** command (`ctrl+shift+e`) will prompt you to enter a tag name (e.g., `div`). The result will be:
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+```html
+<div>
+  <p>This is a paragraph.</p>
+</div>
+```
+
+### 2. Add Attributes to the First Tag
+
+Add attributes like `id`, `class`, or any other custom attribute to the first tag in the selection.
+
+For example, selecting the code below:
+
+```html
+<div>
+  <p>This is a paragraph.</p>
+</div>
+```
+
+And running the **"Add Attributes"** command (`ctrl+shift+f`) will prompt you to enter attributes (e.g., `id="container" class="my-class"`). The result will be:
+
+```html
+<div id="container" class="my-class">
+  <p>This is a paragraph.</p>
+</div>
+```
+
+## Installation
+
+1. Open Visual Studio Code.
+
+2. Go to the Extensions view by clicking the Extensions icon in the Activity Bar or pressing `Ctrl+Shift+X`.
+
+3. Search for "Embed & Modify Code Tags".
+
+4. Click **Install** to install the extension.
+
+5. Enjoy the productivity boost!
+
+## How to Use
+
+### Context Menu
+
+- Right-click on a selected block of code in the editor.
+
+- Choose **"Embed Code with Tag"** or **"Add Attributes"** from the context menu.
+
+### Keyboard Shortcuts
+
+- **Embed Code with Tag**: `Ctrl+Shift+E` (when the editor has focus).
+
+- **Add Attributes**: `Ctrl+Shift+F` (when the editor has focus).
+
+### Command Palette
+
+- Open the Command Palette (`Ctrl+Shift+P`).
+
+- Search for **"Embed Code with Tag"** or **"Add Attributes"**.
+
+- Select the command and follow the prompts.
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+This extension currently has no user-configurable settings. Future updates may include customization options.
 
-For example:
+## Keybindings
 
-This extension contributes the following settings:
+This extension provides the following keybindings for easy usage:
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+| Command | Keybinding | Description |
 
-## Known Issues
+| ------------------------------- | -------------- | ----------------------------------------------------- |
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+| **Embed Code with Tag** | `Ctrl+Shift+E` | Enclose the selected code block with a specified tag. |
+
+| **Add Attributes to First Tag** | `Ctrl+Shift+F` | Add attributes to the first tag in the selected code. |
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
-
 ### 1.0.0
 
-Initial release of ...
+- Initial release of **Embed & Modify Code Tags**.
 
-### 1.0.1
+- Added:
 
-Fixed issue #.
+- **Embed Code with Tag** command.
 
-### 1.1.0
+- **Add Attributes to First Tag** command.
 
-Added features X, Y, and Z.
+## Contributing
 
----
+Contributions are welcome! To contribute:
 
-## Following extension guidelines
+1. Fork this repository.
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+2. Create a feature branch (`git checkout -b feature-branch`).
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+3. Commit your changes (`git commit -m "Add feature"`).
 
-## Working with Markdown
+4. Push to the branch (`git push origin feature-branch`).
 
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
+5. Open a pull request.
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
+## Issues & Feedback
 
-## For more information
+If you encounter any issues or have feedback, please create an issue in the ([html-jsx-wrapper](https://github.com/patrice012/html-jsx-wrapper)). Your input is greatly appreciated!
 
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+## License
 
-**Enjoy!**
+This extension is licensed under the MIT License. See the [The MIT License](https://opensource.org/license/mit) file for details.

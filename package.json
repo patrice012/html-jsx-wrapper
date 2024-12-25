@@ -1,11 +1,16 @@
 {
   "name": "html-jsx-wrapper",
   "displayName": "HTML JSX Wrapper",
+  "publisher": "Patrice",
   "description": "Encapsulate selected code with HTML/JSX tags.",
+  "repository": {
+    "url": "https://github.com/patrice012/html-jsx-wrapper"
+  },
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.95.3"
   },
+  "icon": "assets/icon.png",
   "categories": [
     "Other"
   ],
@@ -23,6 +28,10 @@
       {
         "command": "extension.addAttributes",
         "title": "Add attributes"
+      },
+      {
+        "command": "extension.wrapWithTag",
+        "title": "Tag wrapper"
       }
     ],
     "keybindings": [
@@ -35,6 +44,11 @@
         "command": "extension.addAttributes",
         "key": "ctrl+shift+f",
         "when": "editorTextFocus"
+      },
+      {
+        "command": "extension.wrapWithTag",
+        "key": "ctrl+shift+i",
+        "when": "editorTextFocus"
       }
     ],
     "menus": {
@@ -46,6 +60,11 @@
         },
         {
           "command": "extension.addAttributes",
+          "when": "editorHasSelection",
+          "group": "1_modification"
+        },
+        {
+          "command": "extension.wrapWithTag",
           "when": "editorHasSelection",
           "group": "1_modification"
         }
@@ -69,7 +88,7 @@
   "devDependencies": {
     "@types/mocha": "^10.0.10",
     "@types/node": "20.x",
-    "@types/vscode": "^1.96.0",
+    "@types/vscode": "^1.95.0",
     "@typescript-eslint/eslint-plugin": "^8.17.0",
     "@typescript-eslint/parser": "^8.17.0",
     "@vscode/test-cli": "^0.0.10",
