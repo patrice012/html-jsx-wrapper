@@ -1,7 +1,7 @@
 {
   "name": "html-jsx-wrapper",
   "displayName": "HTML JSX Wrapper",
-  "publisher": "Patrice",
+  "publisher": "patriceoklou",
   "description": "Encapsulate selected code with HTML/JSX tags.",
   "repository": {
     "url": "https://github.com/patrice012/html-jsx-wrapper"
