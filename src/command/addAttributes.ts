@@ -29,90 +29,29 @@ export async function addAttributes() {
   // Prompt the user to add attributes to the tag
   const attributes = await promptForAttributes(parentTag);
 
-  // Wrap the selected text with the tag and attributes
+  // Merge new attributes with existing ones
   setTagAttributes(editor, selection, selectedText, parentTag, attributes);
 }
 
 // Function to prompt the user for attributes
 async function promptForAttributes(tag: string): Promise<string> {
-  // Ask the user for attributes
   const attributeInput = await vscode.window.showInputBox({
     prompt: `Enter attributes for <${tag}> (e.g., class="my-class" id="my-id")`,
     placeHolder: `class="my-class" id="my-id"`,
   });
 
-  // If the user cancels or provides no input, return an empty string
-  if (!attributeInput) {
-    return "";
-  }
-
-  // Validate and normalize the input attributes
-  const validatedAttributes = validateAndNormalizeAttributes(attributeInput);
-
-  if (!validatedAttributes.valid) {
-    // Show an error message if validation fails
-    vscode.window.showErrorMessage(
-      `Invalid attributes provided. ${validatedAttributes.message}`
-    );
-    return "";
-  }
-
-  return validatedAttributes.attributes;
+  return attributeInput || "";
 }
 
-// Helper function to validate and normalize attributes
-function validateAndNormalizeAttributes(input: string): {
-  valid: boolean;
-  attributes: string;
-  message?: string;
-} {
-  // Regular expression to match valid attribute patterns (key="value", key={value})
-  const attributeRegex = /([a-z][a-z0-9-]*)\s*=\s*(["'][^"']*["']|\{[^}]*\})/gi;
-
-  // Check for invalid characters outside attribute patterns
-  if (/[^a-z0-9\s=:"'{}\-,]/i.test(input)) {
-    return {
-      valid: false,
-      attributes: "",
-      message: "Attributes contain invalid characters.",
-    };
-  }
-
-  // Find and normalize all valid attributes
-  const matches = [...input.matchAll(attributeRegex)];
-  if (matches.length === 0) {
-    return {
-      valid: false,
-      attributes: "",
-      message:
-        'No valid attributes found. Ensure attributes are formatted as key="value" or key={value}.',
-    };
-  }
-
-  // Build the normalized attributes string
-  const normalizedAttributes = matches
-    .map((match) => {
-      const key = match[1].toLowerCase(); // Ensure keys are lowercase
-      const value = match[2].trim(); // Trim whitespace around values
-      return `${key}=${value}`;
-    })
-    .join(" "); // Separate attributes with spaces
-
-  return {
-    valid: true,
-    attributes: normalizedAttributes,
-  };
-}
-
+// Function to merge and set tag attributes
 function setTagAttributes(
   editor: vscode.TextEditor,
   selection: vscode.Selection,
   selectedText: string,
   tag: string,
-  attributes: string
+  newAttributes: string
 ) {
-  // Match the first occurrence of the tag in the selected text
-  const tagRegex = new RegExp(`<${tag}(\\s[^>]*)?>`, "i");
+  const tagRegex = new RegExp(`<${tag}([^>]*)>`, "i");
   const match = selectedText.match(tagRegex);
 
   if (!match) {
@@ -122,24 +61,83 @@ function setTagAttributes(
     return;
   }
 
-  // Extract the tag and its current attributes
-  const [originalTag, currentAttributes] = match;
+  const originalTag = match[0];
+  const existingAttributes = match[1]?.trim() || "";
+  const mergedAttributes = mergeAttributes(existingAttributes, newAttributes);
 
-  // Construct the updated tag with new attributes
-  const updatedTag = currentAttributes
-    ? originalTag.replace(currentAttributes, ` ${attributes}`)
-    : `<${tag} ${attributes}>`;
-
-  // Replace the original tag in the selected text
+  const updatedTag = `<${tag} ${mergedAttributes}>`;
   const updatedText = selectedText.replace(originalTag, updatedTag);
 
-  // Update the editor with the modified text
   editor
     .edit((editBuilder) => {
       editBuilder.replace(selection, updatedText);
     })
     .then(() => {
-      // Trigger auto-formatting on the modified document
       vscode.commands.executeCommand("editor.action.formatDocument");
     });
+}
+
+// Function to merge attributes
+function mergeAttributes(existing: string, newAttributes: string): string {
+  const existingAttributes = parseAttributes(existing);
+  const newAttributesObj = parseAttributes(newAttributes);
+
+  // Merge attributes
+  for (const key in newAttributesObj) {
+    if (existingAttributes[key]) {
+      if (key === "class") {
+        // Merge `class` attributes (separated by space)
+        const existingClasses = new Set(existingAttributes[key].split(/\s+/));
+        const newClasses = newAttributesObj[key].split(/\s+/);
+        newClasses.forEach((cls) => existingClasses.add(cls));
+        existingAttributes[key] = Array.from(existingClasses).join(" ");
+      } else if (key === "style") {
+        // Merge `style` attributes (separated by semicolon)
+        const existingStyles = parseStyle(existingAttributes[key]);
+        const newStyles = parseStyle(newAttributesObj[key]);
+        const mergedStyles = { ...existingStyles, ...newStyles };
+        existingAttributes[key] = Object.entries(mergedStyles)
+          .map(([styleKey, value]) => `${styleKey}: ${value}`)
+          .join("; ");
+      } else {
+        // Overwrite other attributes
+        existingAttributes[key] = newAttributesObj[key];
+      }
+    } else {
+      // Add new attribute if it doesn't exist
+      existingAttributes[key] = newAttributesObj[key];
+    }
+  }
+
+  // Reconstruct attributes string
+  return Object.entries(existingAttributes)
+    .map(([key, value]) => `${key}="${value}"`)
+    .join(" ");
+}
+
+// Helper function to parse `style` attributes into an object
+function parseStyle(style: string): Record<string, string> {
+  const styleObj: Record<string, string> = {};
+  style.split(";").forEach((stylePair) => {
+    const [key, value] = stylePair.split(":").map((s) => s.trim());
+    if (key && value) {
+      styleObj[key] = value;
+    }
+  });
+  return styleObj;
+}
+
+// Helper function to parse attributes into an object
+function parseAttributes(attributes: string): Record<string, string> {
+  const attributeRegex = /([a-z][a-z0-9-]*)\s*=\s*(["'])(.*?)\2/gi;
+  const result: Record<string, string> = {};
+
+  let match;
+  while ((match = attributeRegex.exec(attributes)) !== null) {
+    const key = match[1];
+    const value = match[3];
+    result[key] = value;
+  }
+
+  return result;
 }
